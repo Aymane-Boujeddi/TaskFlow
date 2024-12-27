@@ -1,0 +1,16 @@
+<?php 
+
+class User extends Database {
+    private $username;
+    private $userID;
+
+    public function __construct($user ){
+        $this->username = $user;
+    }
+
+    public function getUsername(){
+        return $this->username;
+    }
+    
+    
+}

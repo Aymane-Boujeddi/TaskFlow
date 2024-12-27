@@ -1,0 +1,51 @@
+<?php
+
+class Render
+{
+
+    public static function renderTask($task)
+    {
+        $currentStatus = [
+            "to-do" => "à faire",
+            "pending" => "en cours",
+            "done" => "terminé"
+        ];
+        $statusSelect = "<form action='./includes/modifyTask.inc.php' method='POST' >
+                            <input type='hidden' name='taskID' value='{$task['taskID']}'>
+                                        <select class='task-status-select todo' name='new_status' onchange='this.form.submit()'>
+                                           
+                                        ";
+        foreach ($currentStatus as $current => $label) {
+            $selected = ($task['task_status'] === $current) ? 'selected' : '';
+            $statusSelect .=   '<option value="' . $current . '"' . $selected . '>' . $label . ' </option>';
+        }
+        $statusSelect .=  "</select></form>";
+
+        return " <div class='task-list' data-status='{$task['task_status']}'>
+                            <div class='task-item'>
+                                <div class='task-content'>
+                                    <div class='task-header'>
+                                        <div class='task-title'>{$task['task_title']}</div>
+                                        <span class='task-type {$task['task_type']}'>{$task['task_type']}</span>
+                                    </div>
+                                    <div class='task-description'>{$task['task_content']}</div>
+                                    <div class='task-meta'>
+                                        $statusSelect 
+                                        <span class='task-assignee'>
+                                            <i class='fas fa-user'></i>
+                                           Assigned to : <strong>{$task['user_name']}</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class='task-actions'>
+                                    <button class='task-action edit' title='Modifier'>
+                                        <i class='fas fa-edit'></i>
+                                    </button>
+                                    <button class='task-action delete' title='Supprimer'>
+                                        <i class='fas fa-trash'></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>";
+    }
+}

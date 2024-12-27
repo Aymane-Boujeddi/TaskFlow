@@ -1,0 +1,82 @@
+<?php
+
+class Task extends Database
+{
+    private $taskID;
+    private $taskTitle;
+    private $taskContent;
+    private $taskType;
+    private $taskStatus;
+    private $creationDate;
+    private $taskOwner;
+    private $userID;
+
+
+
+    public function __construct($taskContent, $taskTitle, $taskType, $taskOwner)
+    {
+        $this->taskContent = $taskContent;
+        $this->taskTitle = $taskTitle;
+        $this->taskType = $taskType;
+        $this->taskOwner = $taskOwner;
+    }
+
+    public function createTask()
+    {
+        $db = $this->connect();
+        $checkUser = "SELECT * FROM users where user_name = :name";
+        $checkStsmt = $db->prepare($checkUser);
+        $checkStsmt->execute([":name" => $this->taskOwner]);
+        $userExic = $checkStsmt->fetch();
+        if (!$userExic) {
+            // die("user : " . $this->taskOwner . " doesn't exict ");
+
+        }
+        $this->userID = $userExic['userID'];
+        $insertquery = "INSERT INTO tasks(task_title,task_content,task_type,userID) values(:task_title,:taskContent,:taskType,:userID)";
+        $insertStmt = $db->prepare($insertquery);
+        $insertStmt->execute([
+            ":task_title" => $this->taskTitle,
+            ":taskContent" => $this->taskContent,
+            ":taskType" => $this->taskType,
+            ":userID" => $this->userID
+        ]);
+    }
+
+    public function showTask()
+    {
+        $db = $this->connect();
+        $showQuery = "SELECT * FROM tasks join users on users.userID = tasks.userID;";
+        $showStmt = $db->prepare($showQuery);
+        $showStmt->execute([]);
+        $showtasks = $showStmt->fetchAll();
+        return $showtasks;
+    }
+    public function modifyTask($newStatus, $modifyID)
+    {
+        $db = $this->connect();
+        $query = "UPDATE tasks set task_status = :newStatus where taskID = :ID";
+        $modifyStmt = $db->prepare($query);
+        $modifyStmt->execute([
+            ":newStatus" => $newStatus,
+            ":ID" => $modifyID
+        ]);
+    }
+
+    public function getUsersWithTaskCount()
+    {
+        $sql = "SELECT 
+                    u.user_name,
+                    COUNT(t.taskID) as total_tasks,
+                    SUM(CASE WHEN t.task_status = 'pending' THEN 1 ELSE 0 END) as pending_tasks,
+                    SUM(CASE WHEN t.task_status = 'done' THEN 1 ELSE 0 END) as completed_tasks
+                FROM users u
+                LEFT JOIN tasks t ON u.userID = t.userID
+                GROUP BY u.userID, u.user_name";
+
+        $stmt = $this->connect()->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+}
