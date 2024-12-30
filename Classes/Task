@@ -1,4 +1,5 @@
 <?php
+require_once "User";
 
 class Task extends Database
 {
@@ -13,7 +14,7 @@ class Task extends Database
 
 
 
-    public function __construct($taskContent, $taskTitle, $taskType, $taskOwner)
+    public function __construct($taskContent, $taskTitle, $taskType,$taskOwner)
     {
         $this->taskContent = $taskContent;
         $this->taskTitle = $taskTitle;
@@ -24,15 +25,27 @@ class Task extends Database
     public function createTask()
     {
         $db = $this->connect();
-        $checkUser = "SELECT * FROM users where user_name = :name";
-        $checkStsmt = $db->prepare($checkUser);
-        $checkStsmt->execute([":name" => $this->taskOwner]);
-        $userExic = $checkStsmt->fetch();
-        if (!$userExic) {
+        // $checkUser = "SELECT * FROM users where user_name = :name";
+        // $checkStsmt = $db->prepare($checkUser);
+        // $checkStsmt->execute([":name" => $this->taskOwner]);
+        // $userExic = $checkStsmt->fetch();
+        $newUser = new User($this->taskOwner);
+        $newUserID = $newUser->getUserID();
+        if (!$newUser->getUserID()) {
             // die("user : " . $this->taskOwner . " doesn't exict ");
+            // $addUserQuery = "INSERT INTO users(user_name) values (:name)";
+            // $addStmt = $db->prepare($addUserQuery);
+            // $addStmt->execute([
+            //     ":name" => $this->taskOwner
+            // ]);
+            // $this->userID = $db->lastInsertId();
+            
+            $this->userID = $newUser->setUser();
 
+        }else{
+            $this->userID = $newUserID['userID'];
         }
-        $this->userID = $userExic['userID'];
+        
         $insertquery = "INSERT INTO tasks(task_title,task_content,task_type,userID) values(:task_title,:taskContent,:taskType,:userID)";
         $insertStmt = $db->prepare($insertquery);
         $insertStmt->execute([
@@ -78,5 +91,37 @@ class Task extends Database
         $stmt->execute();
 
         return $stmt->fetchAll();
+    }
+    public function tasksCount($type){
+        $db = $this->connect();
+        if($type === 'bug'){
+            $query = "SELECT count(taskID) as total_tasks  from tasks where task_type = :type";
+        $countStmt = $db->prepare($query);
+        $taskCount = $countStmt->execute([
+            ":type" => $type
+        ]);
+        }elseif($type === 'feature'){
+            $query = "SELECT count(taskID) as total_tasks  from tasks where task_type = :type";
+        $countStmt = $db->prepare($query);
+        $taskCount = $countStmt->execute([
+            ":type" => $type
+        ]);
+        }else{
+            $query = "SELECT count(taskID) as total_tasks  from tasks ";
+        $countStmt = $db->prepare($query);
+        $taskCount = $countStmt->execute([
+
+        ]);
+        }
+        $taskCount = $countStmt->fetch();
+        return $taskCount['total_tasks'];
+    }
+    public function deleteTask($taskID){
+        $db = $this->connect();
+        $query = "DELETE FROM tasks WHERE taskID = :ID";
+        $deleteStmt = $db->prepare($query);
+        $deleteStmt->execute([
+            ":ID" => $taskID
+        ]);
     }
 }

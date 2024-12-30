@@ -18,17 +18,17 @@
             </div>
             <nav class="sidebar-nav">
                 <ul>
-                    <li class="active">
-                        <a href="#"><i class="fas fa-home"></i> Dashboard</a>
+                    <li class="main-nav-btn active">
+                        <a onclick="showContainer('.main-content')"><i class="fas fa-home"></i> Dashboard</a>
                     </li>
-                    <li>
-                        <a href="#"><i class="fas fa-users"></i> Utilisateurs</a>
+                    <li class="users-nav-btn">
+                        <a onclick="showContainer('.users')"><i class="fas fa-users"></i> Utilisateurs</a>
                     </li>
                 </ul>
             </nav>
         </aside>
 
-        <main class="main-content">
+        <main class="main-content cont">
             <header class="content-header">
                 <div class="header-left">
                     <h2>Tableau de bord</h2>
@@ -45,7 +45,11 @@
                 require_once "Classes/Connect";
                 require_once "Classes/Task";
                 require_once "Classes/Render";
-
+                $tasks = new Task("", "", "", "");
+                $allTasks = $tasks->showTask();
+                $taskcount = $tasks->tasksCount('basic');
+                $bugsCount = $tasks->tasksCount('bug');
+                $featCount = $tasks->tasksCount('feature');
                 ?>
 
                 <div class="stat-card">
@@ -54,7 +58,7 @@
                     </div>
                     <div class="stat-info">
                         <h3>Total Tâches</h3>
-                        <p>24</p>
+                        <p><?php  echo $taskcount ;?></p>
                     </div>
                 </div>
                 <div class="stat-card">
@@ -63,7 +67,7 @@
                     </div>
                     <div class="stat-info">
                         <h3>Bugs</h3>
-                        <p>7</p>
+                        <p><?php echo $bugsCount;?></p>
                     </div>
                 </div>
                 <div class="stat-card">
@@ -72,7 +76,7 @@
                     </div>
                     <div class="stat-info">
                         <h3>Features</h3>
-                        <p>12</p>
+                        <p><?php echo $featCount;?></p>
                     </div>
                 </div>
             </div>
@@ -92,12 +96,7 @@
                 </div>
             </div> -->
             <div class="task-container">
-                <?php
-
-                $tasks = new Task("", "", "", "");
-                $allTasks = $tasks->showTask();
-
-                ?>
+                
                 <div class="kanban-board">
                     <div class="kanban-column">
                         <div class="column-header">
@@ -111,36 +110,7 @@
                             }
                         }
                         ?>
-                        <div class="task-list" data-status="todo">
-                            <div class="task-item">
-                                <div class="task-content">
-                                    <div class="task-header">
-                                        <div class="task-title">Implémenter l'authentification</div>
-                                        <span class="task-type task">feature</span>
-                                    </div>
-                                    <div class="task-description">Mettre en place le système d'authentification</div>
-                                    <div class="task-meta">
-                                        <select class="task-status-select todo">
-                                            <option value="todo" selected>À faire</option>
-                                            <option value="in_progress">En cours</option>
-                                            <option value="done">Terminé</option>
-                                        </select>
-                                        <span class="task-assignee">
-                                            <i class="fas fa-user"></i>
-                                            John Doe
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="task-actions">
-                                    <button class="task-action edit" title="Modifier">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="task-action delete" title="Supprimer">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                       
                     </div>
                     <!-- En cours (In Progress) Column -->
                     <div class="kanban-column">
@@ -155,65 +125,7 @@
                             }
                         }
                         ?>
-                        <div class="task-list" data-status="in_progress">
-                            <!-- Similar task-item structure for in-progress tasks -->
-                            <div class="task-item">
-                                <div class="task-content">
-                                    <div class="task-header">
-                                        <div class="task-title">Implémenter l'authentification</div>
-                                        <span class="task-type feature">feature</span>
-                                    </div>
-                                    <div class="task-description">Mettre en place le système d'authentification</div>
-                                    <div class="task-meta">
-                                        <select class="task-status-select todo">
-                                            <option value="todo" selected>À faire</option>
-                                            <option value="in_progress">En cours</option>
-                                            <option value="done">Terminé</option>
-                                        </select>
-                                        <span class="task-assignee">
-                                            <i class="fas fa-user"></i>
-                                            John Doe
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="task-actions">
-                                    <button class="task-action edit" title="Modifier">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="task-action delete" title="Supprimer">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="task-item">
-                                <div class="task-content">
-                                    <div class="task-header">
-                                        <div class="task-title">Implémenter l'authentification</div>
-                                        <span class="task-type feature">feature</span>
-                                    </div>
-                                    <div class="task-description">Mettre en place le système d'authentification</div>
-                                    <div class="task-meta">
-                                        <select class="task-status-select todo">
-                                            <option value="todo" selected>À faire</option>
-                                            <option value="in_progress">En cours</option>
-                                            <option value="done">Terminé</option>
-                                        </select>
-                                        <span class="task-assignee">
-                                            <i class="fas fa-user"></i>
-                                            John Doe
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="task-actions">
-                                    <button class="task-action edit" title="Modifier">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="task-action delete" title="Supprimer">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
 
                     <!-- Terminé (Done) Column -->
@@ -229,42 +141,15 @@
                             }
                         }
                         ?>
-                        <div class="task-list" data-status="done">
-                            <!-- Similar task-item structure for done tasks -->
-                            <div class="task-item">
-                                <div class="task-content">
-                                    <div class="task-header">
-                                        <div class="task-title">Implémenter l'authentification</div>
-                                        <span class="task-type bug">bug</span>
-                                    </div>
-                                    <div class="task-description">Mettre en place le système d'authentification</div>
-                                    <div class="task-meta">
-                                        <select class="task-status-select todo">
-                                            <option value="todo" selected>À faire</option>
-                                            <option value="in_progress">En cours</option>
-                                            <option value="done">Terminé</option>
-                                        </select>
-                                        <span class="task-assignee">
-                                            <i class="fas fa-user"></i>
-                                            John Doe
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="task-actions">
-                                    <button class="task-action edit" title="Modifier">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="task-action delete" title="Supprimer">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
 
-            <div class="users-container">
+            
+        </main>
+        <section class="users cont"  style="display: none;">
+        <div class="users-container ">
                 <div class="section-header">
                     <h3>Utilisateurs et leurs tâches</h3>
                 </div>
@@ -296,7 +181,7 @@
                     </table>
                 </div>
             </div>
-        </main>
+        </section>
     </div>
 
 
@@ -335,14 +220,15 @@
         </div>
     </div>
 
-    <!-- <script src="main.js"></script> -->
     <script>
         const modal = document.getElementById('taskModal');
         const newTaskBtn = document.getElementById('newTaskBtn');
         const closeBtn = document.querySelector('.close-btn');
         const cancelBtn = document.getElementById('cancelBtn');
         const taskForm = document.getElementById('taskForm');
+        const containers = document.querySelectorAll('.cont');
 
+                        
         newTaskBtn.addEventListener('click', () => {
             modal.classList.add('active');
         });
@@ -355,6 +241,19 @@
             modal.classList.remove('active');
             taskForm.reset();
         });
+        function showContainer(selector){
+            const mainBtn = document.querySelector('.main-nav-btn')
+            const usersBtn = document.querySelector('.users-nav-btn')
+            containers.forEach(container =>{container.style.display = 'none'})
+            document.querySelector(selector).style.display = 'block'
+            if(selector == '.main-content'){
+                usersBtn.classList.remove('active')
+                mainBtn.classList.add('active')
+            }else{
+                mainBtn.classList.remove('active')
+                usersBtn.classList.add('active')
+            }
+        }
     </script>
 
 </body>

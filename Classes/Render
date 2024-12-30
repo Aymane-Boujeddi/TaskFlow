@@ -10,7 +10,7 @@ class Render
             "pending" => "en cours",
             "done" => "terminé"
         ];
-        $statusSelect = "<form action='./includes/modifyTask.inc.php' method='POST' >
+        $statusSelect = "<form action='./includes/modifyTaskStatus.inc.php' method='POST' >
                             <input type='hidden' name='taskID' value='{$task['taskID']}'>
                                         <select class='task-status-select todo' name='new_status' onchange='this.form.submit()'>
                                            
@@ -38,12 +38,16 @@ class Render
                                     </div>
                                 </div>
                                 <div class='task-actions'>
-                                    <button class='task-action edit' title='Modifier'>
-                                        <i class='fas fa-edit'></i>
+                                    <a href='./includes/taskDetails.inc.php?taskID={$task['taskID']}'>
+                                    <button class='task-action edit' title='Details'>
+                                        <i class='fa-brands fa-readme'></i>
                                     </button>
+                                    </a>
+                                    <a href='./includes/deleteTask.inc.php?taskID={$task['taskID']}'>
                                     <button class='task-action delete' title='Supprimer'>
                                         <i class='fas fa-trash'></i>
                                     </button>
+                                    </a>
                                 </div>
                             </div>
                         </div>";

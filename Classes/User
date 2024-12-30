@@ -1,15 +1,34 @@
 <?php 
-
+require_once "Connect";
 class User extends Database {
     private $username;
     private $userID;
 
-    public function __construct($user ){
+    public function __construct($user){
         $this->username = $user;
     }
 
     public function getUsername(){
         return $this->username;
+    }
+    public function getUserID(){
+        $db =$this->connect();
+        $db = $this->connect();
+        $User = "SELECT * FROM users where user_name = :name";
+        $Stsmt = $db->prepare($User);
+        $Stsmt->execute([":name" => $this->username]);
+        $userExic = $Stsmt->fetch();
+        return $userExic;
+    }
+    public function setUser(){
+        $db = $this->connect();
+        $addUserQuery = "INSERT INTO users(user_name) values (:name)";
+        $addStmt = $db->prepare($addUserQuery);
+        $addStmt->execute([
+                ":name" => $this->username
+            ]);
+           $userID = $db->lastInsertId();
+           return $userID;
     }
     
     
